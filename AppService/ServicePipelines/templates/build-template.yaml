@@ -1,0 +1,19 @@
+  
+jobs:
+  - job: BuildJob
+    displayName: Copy and Publish Artifacts
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+    - task: ArchiveFiles@2
+      displayName: "Archive files"
+      inputs:
+        rootFolderOrFile: "$(System.DefaultWorkingDirectory)/workflows"
+        includeRootFolder: false
+        archiveFile: "$(Build.ArtifactStagingDirectory)/build$(Build.BuildId).zip"
+        archiveType: 'zip'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'

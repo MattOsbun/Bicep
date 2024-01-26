@@ -1,0 +1,35 @@
+parameters: 
+- name: environment
+  type: string
+  values:
+  - dev
+  - stage
+  - prod
+- name: servicePrincipal
+  type: string
+- name: appName
+  type: string
+- name: poolName
+  type: string
+
+jobs:
+- deployment: OrchDeployment
+  displayName: Orchestration Deployment
+  pool:
+    name: ${{parameters.poolName}}
+  environment: ${{parameters.environment}}
+  strategy: 
+    runOnce:
+      deploy:
+        steps:
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifact: drop
+            patterns: '**/*.zip'
+        - task: AzureFunctionApp@1 
+          inputs:
+            azureSubscription: ${{parameters.servicePrincipal}}
+            appType: 'functionapp,workflowapp'
+            appName: '${{parameters.appName}}'
+            package: '$(Pipeline.Workspace)\build$(Build.BuildId).zip'
+            deploymentMethod: 'auto'
