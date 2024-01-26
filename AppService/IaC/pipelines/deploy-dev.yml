@@ -1,0 +1,21 @@
+trigger:
+- main
+  
+name: Deploy Bicep files to dev
+  
+stages:
+- stage: Build
+  displayName: Build and Publish
+  jobs:
+  - template: ./templates/build-template.yaml
+
+- stage: Dev
+  displayName: Deploy To Dev  
+  jobs:
+  - template: /pipelines/templates/deploy-template.yaml
+    parameters: 
+      environment: dev
+      deploymentName: 'devEsbintIacDeployment'
+      location: 'eastus2'
+      servicePrincipal: 'DO-SC-DEV'
+      templateFile: 'dev.bicepparam'

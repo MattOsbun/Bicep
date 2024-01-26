@@ -1,0 +1,38 @@
+trigger:
+  tags:
+    include:
+    - v*.*
+
+name: IaC Release
+
+stages:
+
+- stage: Build
+  displayName: Build and Publish
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  jobs:
+  - template: ./templates/build-template.yaml
+
+- stage: Stage
+  displayName: Deploy To Stage
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - template: /pipelines/templates/deploy-template.yaml
+    parameters: 
+      environment: stage
+      deploymentName: 'stageEsbintIacDeployment'
+      location: 'eastus2'
+      servicePrincipal: 'DO-SC-DEV'
+      templateFile: 'stage.bicepparam'
+
+- stage: Prod
+  displayName: Deploy To Prod
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - template: /pipelines/templates/deploy-template.yaml
+    parameters: 
+      environment: prod 
+      deploymentName: 'prodEsbintIacDeployment'
+      location: 'eastus2'
+      servicePrincipal: 'DO-SC-DEV'
+      templateFile: 'prod.bicepparam'

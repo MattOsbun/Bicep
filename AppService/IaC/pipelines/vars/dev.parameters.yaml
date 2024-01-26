@@ -1,0 +1,7 @@
+variables:
+  servicePrincipal: 'DO-SC-DEV'
+  templateFile: '/dev.bicepparam'
+  subscriptionName: 'mg-pm-da-nonprod-sub'
+  deploymentName: 'devIacDeployment'
+  location: 'eastus2'
+  environment: 'dev'

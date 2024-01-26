@@ -1,0 +1,7 @@
+variables:
+  servicePrincipal: 'devsp'
+  templateFile: '.prod.bicepparam'
+  subscriptionName: 'mg-pm-da-prod-sub'
+  deploymentName: 'prodIacDeployment'
+  location: 'eastus2'
+  environment: 'prod'

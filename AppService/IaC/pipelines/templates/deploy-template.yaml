@@ -1,0 +1,41 @@
+parameters: 
+- name: environment
+  type: string
+  values:
+  - dev
+  - stage
+  - prod
+- name: deploymentName
+  type: string
+- name: location
+  type: string
+  default: eastus2
+- name: servicePrincipal
+  type: string
+- name: templateFile
+  type: string
+
+jobs:
+- deployment: IaCDeployment
+  displayName: IaC Deployment
+  pool:
+    vmImage: 'windows-latest'
+  environment: ${{parameters.environment}}
+  strategy: 
+    runOnce:
+      deploy:
+        steps:
+        - download: current
+          artifact: '$(artifactName)'
+        - task: AzureCLI@2
+          displayName: 'Azure CLI, with SPN info'
+          inputs:
+            scriptType: bash
+            scriptLocation: inlineScript
+            azureSubscription: ${{parameters.servicePrincipal}}
+            addSpnToEnvironment: true
+            inlineScript: |
+              az deployment sub create \
+              --location ${{parameters.location}} \
+              --name ${{parameters.deploymentName}} \
+              --parameters '$(Agent.BuildDirectory)\$(artifactName)\${{parameters.templateFile}}'

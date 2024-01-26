@@ -1,0 +1,7 @@
+variables:
+  servicePrincipal: 'pm-esb-sp-dev'
+  templateFile: '.stage.bicepparam'
+  subscriptionName: 'mg-pm-da-nonprod-sub'
+  deploymentName: 'stageIacDeployment'
+  location: 'eastus2'
+  environment: 'stage'
